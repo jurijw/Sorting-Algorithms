@@ -45,12 +45,12 @@ def initialize_cell_array(user_in):
     cell_array = np.zeros(n, dtype=Cell)
 
     # Get n random integer value between the bounds
-    values = np.random.randint(low, high+1, (n))
+    values = np.random.randint(low, high + 1, (n))
 
     # Populate the array
     for i, val in enumerate(values):
         cell_array[i] = Cell(val, i)
-        
+
     return cell_array
 
 
@@ -78,8 +78,8 @@ def display_cells(screen, cell_array, user_in):
     # Determine width of screen alottet per cell
     width_per_cell = screen_width // n
 
-    cell_width_scale = 0.9 # Fraction of alottet space per cell to be used
-    cell_width = cell_width_scale * width_per_cell 
+    cell_width_scale = 0.9  # Fraction of alottet space per cell to be used
+    cell_width = cell_width_scale * width_per_cell
 
     # Fill the background of the screen
     screen.fill(white)
@@ -89,7 +89,7 @@ def display_cells(screen, cell_array, user_in):
         cell_x = i * width_per_cell + offset_x
         # Determine cell height as a fraction of screen height
         cell_height = screen_height // high * cell.val
-        cell_y = screen_height - cell_height 
+        cell_y = screen_height - cell_height
 
         # Determine color
         color = black
@@ -122,15 +122,15 @@ def bubble_sort(screen, cell_array, user_in, accelerated=True):
     swapped = True
     while swapped:
         swapped = False
-        
+
         for i in range(n - 1):
             current = cell_array[i]
-            neighbor = cell_array[i+1]
+            neighbor = cell_array[i + 1]
             # Set some cell properties for visualization
             current.current = True
             neighbor.neighbor = True
 
-            # Compare two neighbors and swap if neccessary 
+            # Compare two neighbors and swap if neccessary
             if current.val > neighbor.val:
                 current.val, neighbor.val = neighbor.val, current.val
                 swapped = True
@@ -143,13 +143,37 @@ def bubble_sort(screen, cell_array, user_in, accelerated=True):
 
         if accelerated:
             n -= 1
-        
 
-
+    # Return true when the sort is complete.
     return True
 
+
+def merge_sort(screen, cell_array):
+
+    # Base case - list is of length 1 (cannot be spiit further)
+    if len(cell_array) <= 1:
+        return cell_array
+
+    # Recursive case - split the array into two
+    else:
+        left = np.array([], dtype=Cell)
+        right = np.array([], dtype=Cell)
+        for i, cell in enumerate(cell_array):
+            if i < len(cell_array) // 2:
+                left = np.append(left, cell)  # FIX: get equivalent method for numpy arrays
+            else:
+                right = np.append(right, cell)
+
+        # Recursive call to sort sublists
+        left = merge_sort(screen, left)
+        right = merge_sort(screen, right)
+
+        # Return the two concatenated arrays
+        return np.concatenate((left, right))
+
+
 def main():
-    # Setup screen 
+    # Setup screen
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Sorting Visualization")
 
@@ -163,14 +187,16 @@ def main():
                 pygame.quit()
                 sys.exit(0)
 
+        # if(bubble_sort(screen, cell_array, user_in)):
+        #     print("Finished bubble sort!")
+        #     # Await new user inputs
 
-        if(bubble_sort(screen, cell_array, user_in)):
-            print("Finished bubble sort!")
-            # Await new user inputs
+        merge_sort(screen, cell_array)
 
         # Draw the screen
         display_cells(screen, cell_array, user_in)
         pygame.display.update()
+
 
 if __name__ == "__main__":
     pygame.init()
