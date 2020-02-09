@@ -99,7 +99,8 @@ def display_cells(screen, cell_array, user_in):
             color = blue
 
         # Draw a bar corresponding to the value of the cell
-        pygame.draw.rect(screen, color, ((cell_x, cell_y), (cell_width, cell_height)))
+        pygame.draw.rect(screen, color, ((cell_x, cell_y),
+                                         (cell_width, cell_height)))
 
 
 def bubble_sort(screen, cell_array, user_in, accelerated=True):
@@ -160,7 +161,8 @@ def merge_sort(screen, cell_array):
         right = np.array([], dtype=Cell)
         for i, cell in enumerate(cell_array):
             if i < len(cell_array) // 2:
-                left = np.append(left, cell)  # FIX: get equivalent method for numpy arrays
+                # FIX: get equivalent method for numpy arrays
+                left = np.append(left, cell)
             else:
                 right = np.append(right, cell)
 
@@ -191,7 +193,12 @@ def main():
         #     print("Finished bubble sort!")
         #     # Await new user inputs
 
-        merge_sort(screen, cell_array)
+        # merge_sort(screen, cell_array)
+
+        # Create a heap from the data
+        cell_heap = Heap()
+        for cell in cell_array:
+            cell_heap.add(cell.val)
 
         # Draw the screen
         display_cells(screen, cell_array, user_in)
